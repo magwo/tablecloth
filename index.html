@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<head>
+    <style>
+        table {
+            width: 500px;
+        }
+        table td {
+            padding: 5px;
+            margin: 0;
+            border: 1px solid green;
+            font-family: helvetica, arial;
+            font-size: 10px;
+        }
+
+        .active {
+            background-color: gray;
+        }
+    </style>
+
+    <script src="lib/angular.js"></script>
+    <script src="out/main.js"></script>
+</head>
+
+<body ng-app="tableTestApp">
+    <h1>Hej</h1>
+    <div ng-controller="TableController">
+        <table cellpadding="0" cellspacing="0">
+        <tr ng-click="selectItem(item)" ng-class="{active: isSelectedItem(item)}" ng-repeat="item in currentItems">
+            <td>{{item.name}}</td>
+            <td>{{item.someProperty}}</td>
+            <td>{{item.someOtherProperty}}</td>
+            <td ng-click="deleteItem(item)">X</td>
+        </tr>
+        </table>
+        <a ng-click="prevPage()"><<</a>
+        <a ng-click="nextPage()">>></a>
+        <p>Page {{selectedPage + 1}} of {{pageCount}}</p>
+    </div>
+</body>
