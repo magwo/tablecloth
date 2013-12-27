@@ -31,6 +31,9 @@ asSimpleTableController = ($scope, $q, dataService, itemsPerPage) ->
     $scope.selectIndex = (i) ->
         $scope.selectItem($scope.currentItems[i])
 
+    $scope.hasSelectedItem = ->
+        return $scope.selectedItem != null
+
     $scope.isSelectedItem = (otherItem) ->
         return $scope.selectedItem is otherItem
 
@@ -66,8 +69,12 @@ asSimpleTableController = ($scope, $q, dataService, itemsPerPage) ->
     $scope.onItemsChanged = ->
         console.log "Items changed yeah"
 
+    $scope.onItemSaved = (item) ->
+        console.log "Saved", item
+        $scope.unselect()
+
     # Externalize
-    $scope.onResponse = (response) ->
+    $scope.onListResponse = (response) ->
         $scope.itemCountTotal = response.totalCount
         $scope.pageCount = Math.ceil(response.totalCount / $scope.itemsPerPage)
     ###################
@@ -76,25 +83,38 @@ asSimpleTableController = ($scope, $q, dataService, itemsPerPage) ->
         # Respect previous operation by always using promise interface (or?)
         console.log "Getting items..."
         $scope.currentOperation['finally'] ->
+            $scope.leftToLoad = 1.0
             $scope.currentOperation = dataService.getItemList($scope.itemsPerPage, $scope.itemsPerPage * $scope.selectedPage)
             $scope.currentOperation.then( (resp) ->
                 $scope.unselect()
-                $scope.onResponse(resp)
+                $scope.onListResponse(resp)
                 $scope.currentItems = resp.items
                 $scope.onItemsChanged()
+                $scope.leftToLoad = 0.0
             , $scope.onError, $scope.onLoadProgress)
 
     $scope.deleteItem = (item) ->
         # Respect previous operation by always using promise interface (or?)
         $scope.currentOperation['finally'] ->
+            $scope.leftToLoad = 1.0
             if $scope.isSelectedItem(item)
                 $scope.unselect()
             $scope.currentOperation = dataService.deleteItem(item)
             $scope.currentOperation.then(->
                 $scope.currentItems.splice($scope.currentItems.indexOf(item), 1)
                 $scope.onItemsChanged()
+                $scope.leftToLoad = 0.0
             , $scope.onError, $scope.onLoadProgress)
 
+    $scope.saveItem = (item) ->
+        # Respect previous operation by always using promise interface (or?)
+        $scope.currentOperation['finally'] ->
+            $scope.leftToLoad = 1.0
+            $scope.currentOperation = dataService.saveItem(item)
+            $scope.currentOperation.then(->
+                $scope.onItemSaved(item)
+                $scope.leftToLoad = 0.0
+            , $scope.onError, $scope.onLoadProgress)
 
 createTestItem = (name) ->
     return {
@@ -111,16 +131,17 @@ app.factory "testDataService", ($q) ->
         d = $q.defer()
 
         setTimeout( ->
-            d.notify(0.3)
-            setTimeout( ->
-                d.notify(0.5)
-                setTimeout( ->
-                    #d.reject("nooo")
-                    d.resolve()
-                , 800)
-            , 100)
-        , 100)
+            #d.reject("nooo")
+            d.resolve()
+        , 800)
 
+        return d.promise
+
+    service.saveItem = (item) ->
+        d = $q.defer()
+        setTimeout( ->
+            d.resolve()
+        , 400)
         return d.promise
 
     service.getItemList = (count, offset) ->
@@ -132,7 +153,7 @@ app.factory "testDataService", ($q) ->
             items = (createTestItem("item #{offset + it}") for it in [0..actualCount])
             response = { items: items, totalCount: 125 }
             d.resolve(response)
-        , 200)
+        , 300)
 
         return d.promise
 
@@ -142,6 +163,6 @@ app.factory "testDataService", ($q) ->
 app.controller "TableController", ($scope, $q, testDataService) ->
     window.$q = $q
 
-    asSimpleTableController($scope, $q, testDataService, 20)
+    asSimpleTableController($scope, $q, testDataService, 10)
     console.log($scope)
     $scope.selectPage(0)
