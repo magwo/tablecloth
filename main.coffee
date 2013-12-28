@@ -20,13 +20,19 @@ asSimpleListController = ($scope, $q, dataService, eventHandlers, itemsPerPage) 
     $scope.isLoading = -> $scope.leftToLoad > 0
 
     $scope.selectItem = (item) ->
-        # TODO: Support item selection prevention with a function
+        # TODO: Support item select prevention with a function
         prevItem = $scope.selectedItem
         $scope.selectedItem = item
         eventHandlers.afterItemSelection($scope.selectedItem, prevItem)
 
     $scope.selectIndex = (i) ->
         $scope.selectItem($scope.currentItems[i])
+
+    $scope.toggleSelect = (item) ->
+        if item != $scope.selectedItem
+            $scope.selectItem(item)
+        else
+            $scope.unselect()
 
     $scope.hasSelectedItem = ->
         return $scope.selectedItem != null

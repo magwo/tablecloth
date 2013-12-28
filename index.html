@@ -29,6 +29,7 @@
     <div ng-controller="TableController">
         <table cellpadding="0" cellspacing="0" ng-class="{loading: isLoading()}">
         <tr ng-class="{active: isSelectedItem(item)}" ng-repeat="item in currentItems">
+            <td ng-click="toggleSelect(item)">+/-</td>
             <td ng-click="selectItem(item)">{{item.name}}</td>
             <td ng-click="selectItem(item)">{{item.someProperty}}</td>
             <td ng-click="selectItem(item)">{{item.someOtherProperty}}</td>
