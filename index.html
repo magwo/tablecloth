@@ -34,22 +34,24 @@
 
 <body ng-app="tableTestApp">
     <div ng-controller="TableController">
-        <table cellpadding="0" cellspacing="0" ng-class="{loading: isLoading()}">
-        <tr ng-class="{active: isSelectedItem(item)}" ng-repeat="item in currentItems">
-            <td ng-click="toggleSelect(item)">+/-</td>
-            <td ng-click="selectItem(item)">{{item.name}}</td>
-            <td ng-click="selectItem(item)">{{item.someProperty}}</td>
-            <td ng-click="selectItem(item)">{{item.someOtherProperty}}</td>
-            <td ng-click="deleteItem(item)">X</td>
-        </tr>
-        </table>
-        <form ng-if="hasSelectedItem()" ng-submit="saveItem(selectedItem)">
-            <input type="text" ng-model="selectedItem.name">
-            <input type="text" ng-model="selectedItem.someProperty">
-            <input type="text" ng-model="selectedItem.someOtherProperty">
-            <button type="submit">Save</button>
-            <button ng-click="unselect()">Cancel</button>
-        </form>
+        <div style="height: 400px">
+            <table cellpadding="0" cellspacing="0" ng-class="{loading: isLoading()}">
+            <tr ng-class="{active: isSelectedItem(item)}" ng-repeat="item in currentItems">
+                <td ng-click="toggleSelect(item)">+/-</td>
+                <td ng-click="selectItem(item)">{{item.name}}</td>
+                <td ng-click="selectItem(item)">{{item.someProperty}}</td>
+                <td ng-click="selectItem(item)">{{item.someOtherProperty}}</td>
+                <td ng-click="deleteItem(item)">X</td>
+            </tr>
+            </table>
+            <form ng-if="hasSelectedItem()" ng-submit="saveItem(selectedItem)">
+                <input type="text" ng-model="selectedItem.name">
+                <input type="text" ng-model="selectedItem.someProperty">
+                <input type="text" ng-model="selectedItem.someOtherProperty">
+                <button type="submit">Save</button>
+                <button ng-click="unselect()">Cancel</button>
+            </form>
+        </div>
         <button class="pagination"  ng-click="prevPage()">Prev</button>
         <button class="pagination" ng-repeat="pageNum in getPageNumList(10)" ng-click="selectPage(pageNum)" ng-class="{pagination_active: pageNum == selectedPage}">
             {{pageNum + 1}}
