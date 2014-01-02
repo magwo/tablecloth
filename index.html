@@ -13,11 +13,18 @@
             font-size: 10px;
         }
 
-        .active {
+        tr.active {
             background-color: gray;
+            height: 50px;
         }
         .loading {
             background-color: #ddd;
+        }
+        .pagination_active {
+            color: red;
+        }
+        button.pagination {
+            width: 40px;
         }
     </style>
 
@@ -43,8 +50,11 @@
             <button type="submit">Save</button>
             <button ng-click="unselect()">Cancel</button>
         </form>
-        <a ng-click="prevPage()"><<</a>
-        <a ng-click="nextPage()">>></a>
+        <button class="pagination"  ng-click="prevPage()">Prev</button>
+        <button class="pagination" ng-repeat="pageNum in getPageNumList(10)" ng-click="selectPage(pageNum)" ng-class="{pagination_active: pageNum == selectedPage}">
+            {{pageNum + 1}}
+        </button>
+        <button class="pagination" ng-click="nextPage()">Next</button>
         <p>Page {{selectedPage + 1}} of {{pageCount}}</p>
     </div>
 </body>

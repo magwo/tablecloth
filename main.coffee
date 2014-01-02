@@ -47,9 +47,11 @@ asSimpleListController = ($scope, $q, dataService, eventHandlers, itemsPerPage) 
         $scope.selectItem(null)
 
     $scope.selectPage = (pageNum) ->
-        safePageNum = Math.min($scope.pageCount - 1, Math.max(0, pageNum))
+        console.log "Attempting to select page #{pageNum}"
+        safePageNum = Math.max(0, Math.min($scope.pageCount - 1, pageNum))
         if safePageNum != $scope.selectedPage
-            $scope.selectedPage = pageNum
+            console.log "Loading #{safePageNum}"
+            $scope.selectedPage = safePageNum
             $scope.getItemList()
 
     $scope.nextPage = ->
@@ -70,6 +72,12 @@ asSimpleListController = ($scope, $q, dataService, eventHandlers, itemsPerPage) 
                 eventHandlers.onItemsChanged()
                 $scope.leftToLoad = 0.0
             , eventHandlers.onError, eventHandlers.onLoadProgress)
+
+    $scope.getPageNumList = (count) ->
+        start = Math.max(0, $scope.selectedPage - Math.floor(count/2))
+        end = Math.min($scope.pageCount, start + count)
+        start = Math.max(0, end - count)
+        return [start...end]
 
     $scope.deleteItem = (item) ->
         # Respect previous operation by always using promise interface (or?)
