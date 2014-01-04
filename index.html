@@ -29,11 +29,12 @@
     </style>
 
     <script src="lib/angular.js"></script>
+    <script src="out/tablecloth.js"></script>
     <script src="out/main.js"></script>
 </head>
 
-<body ng-app="tableTestApp">
-    <div ng-controller="TableController">
+<body ng-app="exampleApp">
+    <div ng-controller="exampleController">
         <div style="height: 400px">
             <table cellpadding="0" cellspacing="0" ng-class="{loading: isLoading()}">
             <tr ng-class="{active: isSelectedItem(item)}" ng-repeat="item in currentItems">
